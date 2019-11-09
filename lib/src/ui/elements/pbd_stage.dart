@@ -31,9 +31,12 @@ class _PBDStageState extends State<PBDStage> {
       decoration: appBorder(),
       child: GestureDetector(
         onPanUpdate: (DragUpdateDetails details) {
-          RenderBox object = context.findRenderObject();
-          Offset _localPosition = object.globalToLocal(details.globalPosition);
-          _points = List.from(_points)..add(_localPosition);
+       //  setState(() {
+            RenderBox object = context.findRenderObject();
+            Offset _localPosition = object.globalToLocal(details.globalPosition);
+            _localPosition = _localPosition.translate(0.0, -(AppBar().preferredSize.height));
+            _points = List.from(_points)..add(_localPosition);
+       //  });
         },
         onPanEnd: (DragEndDetails details) {
           _points.add(null);
@@ -58,35 +61,25 @@ class _PBDStageState extends State<PBDStage> {
         builder: (BuildContext context, PBDState state) {
           if (state is PBDStateLoaded) {
             // PHOTO BOOTH DISPLAY DRAWING TOOLS
-            return Column(
-              children: <Widget>[
-                Text(
-                  'Photo Booth UI ${state.pbdObject.strokes.length}',
-                  style: bodyTextStyle(),
-                ),
-                SizedBox(height: 8.0),
-
-                RepaintBoundary(
-                  key: widget.globalKey,
-                  child: RepaintBoundary.wrap(
-                      Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: <Widget>[
-                          // back ground image
-                          if (state.pbdObject.image != null) ...[
-                            Image.file(
-                              state.pbdObject.image,
-                              height: deviceHeight * 0.7,
-                              width: deviceWidth * 0.85,
-                            ),
-                          ],
-                          // draw stuff container
-                          drawContainer(state.pbdObject),
-                        ],
-                      ),
-                      state.pbdObject.strokes.length + 1),
-                )
-              ],
+            return RepaintBoundary(
+              key: widget.globalKey,
+              child: RepaintBoundary.wrap(
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: <Widget>[
+                      // back ground image
+                      if (state.pbdObject.image != null) ...[
+                        Image.file(
+                          state.pbdObject.image,
+                          height: deviceHeight * 0.7,
+                          width: deviceWidth * 0.85,
+                        ),
+                      ],
+                      // draw stuff container
+                      drawContainer(state.pbdObject),
+                    ],
+                  ),
+                  state.pbdObject.strokes.length + 1),
             );
           }
 
@@ -98,7 +91,6 @@ class _PBDStageState extends State<PBDStage> {
                   'Select/Edit/Update an Image for the photo booth',
                   style: bodyTextStyle(),
                 ),
-                SizedBox(height: 8.0),
                 if (state.imageFile != null) ...[
                   Image.file(
                     state.imageFile,

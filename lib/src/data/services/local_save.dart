@@ -12,8 +12,9 @@ const String PHP_PBD_POST = "https://sandbox.markhamenterprises.com/docs/";
 
 // convert to class singleton service
 abstract class BaseSharedPrefService {
-  Future<bool> saveImage();
-  Future<bool> saveStroke();
+  Future<bool> savePBDObject();
+  // load
+  Future<PBDObject> getPBDObject();
 }
 
 class SharedPrefService extends BaseSharedPrefService {
@@ -22,6 +23,9 @@ class SharedPrefService extends BaseSharedPrefService {
   factory SharedPrefService() => _instance;
   SharedPrefService.internal();
   // DIO is a service I use to post to php it wraps things better than
-  Future<bool> saveImage()async => true;
-  Future<bool> saveStroke()async => true;
+  Future<bool> savePBDObject()async => true;
+  Future<PBDObject> getPBDObject()async => PBDObject(null, null);
+//
+//  _saveImage();
+//  _saveStrokes();
 }

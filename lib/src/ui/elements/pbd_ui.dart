@@ -30,28 +30,31 @@ class PhotoBoothUI extends StatelessWidget {
         ? () => _uiBloc.add(UIEventPhotoBoothTrigger(UIBoothTrigger.undo))
         : null;
 
-    return Container(
-            decoration: appBorder(),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                iconButton(
-                    icon: iconNewFile,
-                    function: newFileFunction,
-                    tooltip: btnNewFile),
-                iconButton(
-                    icon: iconOpen, function: openFunction, tooltip: btnOpen),
-                iconButton(
-                    icon: iconSave, function: saveFunction, tooltip: btnSave),
-                iconButton(
-                    icon: iconImage,
-                    function: imageSelectFunction,
-                    tooltip: btnImage),
-                iconButton(
-                    icon: iconUndo, function: undoFunction, tooltip: btnUndo),
-               ColorDropdown(_currentColor, _setColor)
-              ],
-            ));
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+              decoration: appBorder(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  iconButton(
+                      icon: iconNewFile,
+                      function: newFileFunction,
+                      tooltip: btnNewFile),
+                  iconButton(
+                      icon: iconOpen, function: openFunction, tooltip: btnOpen),
+                  iconButton(
+                      icon: iconSave, function: saveFunction, tooltip: btnSave),
+                  iconButton(
+                      icon: iconImage,
+                      function: imageSelectFunction,
+                      tooltip: btnImage),
+                  iconButton(
+                      icon: iconUndo, function: undoFunction, tooltip: btnUndo),
+                 ColorDropdown(_currentColor, _setColor)
+                ],
+              )),
+    );
   }
 }

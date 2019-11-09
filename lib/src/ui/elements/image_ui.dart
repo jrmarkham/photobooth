@@ -22,23 +22,26 @@ class ImageSelectorUI extends StatelessWidget {
     final Function cameraFunction =
         () => _uiBloc.add(UIEventImageSelectTrigger(UIImageTrigger.camera));
 
-    return Container(
-      decoration: appBorder(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          iconButton(
-              icon: iconClose, function: closeFunction, tooltip: btnClose),
-          iconButton(icon: iconSave, function: saveFunction, tooltip: btnSave),
-          iconButton(icon: iconEdit, function: editFunction, tooltip: btnEdit),
-          iconButton(
-              icon: iconGallery,
-              function: galleryFunction,
-              tooltip: btnGallery),
-          iconButton(
-              icon: iconCamera, function: cameraFunction, tooltip: btnCamera),
-        ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: appBorder(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            iconButton(
+                icon: iconClose, function: closeFunction, tooltip: btnClose),
+            iconButton(icon: iconSave, function: saveFunction, tooltip: btnSave),
+            iconButton(icon: iconEdit, function: editFunction, tooltip: btnEdit),
+            iconButton(
+                icon: iconGallery,
+                function: galleryFunction,
+                tooltip: btnGallery),
+            iconButton(
+                icon: iconCamera, function: cameraFunction, tooltip: btnCamera),
+          ],
+        ),
       ),
     );
   }

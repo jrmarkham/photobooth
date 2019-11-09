@@ -1,13 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photobooth/src/data/blocs/pbd/bloc.dart';
 import 'package:photobooth/src/data/blocs/ui/bloc.dart';
@@ -17,6 +10,7 @@ import 'package:photobooth/src/ui/elements/image_ui.dart';
 import 'package:photobooth/src/ui/elements/pbd_stage.dart';
 import 'package:photobooth/src/ui/elements/pbd_ui.dart';
 import 'package:photobooth/src/ui/elements/save_page.dart';
+import 'package:photobooth/src/utils/image_utils.dart' as imageUtils;
 
 class App extends StatefulWidget {
   @override
@@ -81,50 +75,11 @@ class _AppState extends State<App> {
         ]);
   }
 
-  // USING A PLUGIN FORM IMAGE COLLECTION
-  // THIS PLUGIN IS CORE TO FLUTTER DEV TEAM
-  void getImage(ImageSource _is) async {
-    // IMAGE INTERFACE GETS IMAGE IMAGE
-    try {
-      final File _image = await ImagePicker.pickImage(source: _is);
-      if (_image != null) _pbdBloc.add(PBDEventSetSelectImage(_image));
-    } on PlatformException {
-      informAlert(context, 'error', 'error messages');
-    }
-  }
-
-  void editImage(File _image) async {
-    // EDIT IMAGE INTERFACE GETS IMAGE IMAGE
-    try {
-      final File _updateImage = await ImageCropper.cropImage(
-          sourcePath: _image.path,
-          aspectRatioPresets: [CropAspectRatioPreset.original],
-          androidUiSettings: AndroidUiSettings(
-              lockAspectRatio: true,
-              toolbarTitle: labelCropper,
-              initAspectRatio: CropAspectRatioPreset.original),
-          iosUiSettings: IOSUiSettings(
-              minimumAspectRatio: 1.0)); // ratioX: 1.0, ratioY: 1.0);
-      if (_updateImage != null)
-        _pbdBloc.add(PBDEventSetSelectImage(_updateImage));
-    } on PlatformException {
-      informAlert(context, 'error', 'error messages');
-    }
-  }
-
-  void saveImage(String name, String directory) async{
-    RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
-    ui.Image image = await boundary.toImage(pixelRatio: 1.0);
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List pngBytes = byteData.buffer.asUint8List();
-    String bs64 = base64Encode(pngBytes);
-    _pbdBloc.add(PBDEventPostImage(bs64, name, directory));
-  }
 
   @override
   Widget build(BuildContext context) {
     initDevice(context);
-    final Function saveImageFunction = (String name, String dir) => saveImage(name, dir);
+    final Function saveImageFunction = (String name, String dir) => imageUtils.saveImage(name, dir, _pbdBloc, _globalKey);
     final Function savePBDFunction = (String name, String dir) => _pbdBloc.add(PBDEventPostPBD(name, dir));
     final SaveFormPage saveFormPage = SaveFormPage(saveImageFunction, savePBDFunction);
     return MultiBlocListener(
@@ -160,12 +115,12 @@ class _AppState extends State<App> {
                   case UIImageTrigger.camera:
                     // open camera ui on phone
                     // add image retrieved to image select ui //
-                    getImage(ImageSource.camera);
+                    imageUtils.getImage(ImageSource.camera, _pbdBloc);
                     return;
                   case UIImageTrigger.gallery:
                     // open gallery ui on phone
                     // add image retrieved to image select ui //
-                    getImage(ImageSource.gallery);
+                    imageUtils.getImage(ImageSource.gallery, _pbdBloc);
                     return;
                   case UIImageTrigger.edit:
                     // open edit ui on phone
@@ -225,14 +180,10 @@ class _AppState extends State<App> {
             setState(() {
               _imageAvailable = state.imageFile != null;
             });
-            // empty
           }
 
           // edit image
-          if (state is PBDStateImageEdit) {
-            editImage(state.imageFile);
-            // empty
-          }
+          if (state is PBDStateImageEdit)imageUtils.editImage(state.imageFile, _pbdBloc);
         }),
       ],
 

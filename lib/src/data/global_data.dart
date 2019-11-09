@@ -5,6 +5,7 @@ export 'package:photobooth/src/ui/globals/alerts.dart';
 export 'package:photobooth/src/data/content.dart';
 export 'package:photobooth/src/data/enums.dart';
 export 'package:photobooth/src/data/models/pbd.dart';
+
 class GlobalData{
 
 

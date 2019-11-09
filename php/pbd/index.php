@@ -20,6 +20,7 @@ header("Access-Control-Allow-Headers:{$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEAD
 $dir_user = $_POST["dir"];
 $json_name = $_POST["json_name"];
 $target_dir = "pbd/";
+$backs = $_POST["backs"];
 
 $dir = $target_dir . $dir_user;
 if( !is_dir( $dir ) ){
@@ -33,6 +34,7 @@ $strokes = json_decode($_POST["strokes"], true);
 
 $array = Array (
     "image"=> "http://sandbox.markhamenterprises.com/docs/". $target_file,
+    "backs"=> $backs,
     "strokes" => $strokes
 
 );
