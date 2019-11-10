@@ -6,7 +6,6 @@ import 'package:photobooth/src/data/blocs/pbd/bloc.dart';
 import 'package:photobooth/src/data/blocs/ui/bloc.dart';
 import 'package:photobooth/src/data/enums.dart';
 import 'package:photobooth/src/data/global_data.dart';
-import 'package:photobooth/src/data/global_data.dart' as prefix0;
 import 'package:photobooth/src/ui/elements/image_ui.dart';
 import 'package:photobooth/src/ui/elements/pbd_stage.dart';
 import 'package:photobooth/src/ui/elements/pbd_ui.dart';
@@ -80,7 +79,13 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+
+
     initDevice(context);
+
+
+
+
     final Function saveImageFunction = (String name, String dir) =>
         imageUtils.saveImage(name, dir, _pbdBloc, _globalKey);
     final Function savePBDFunction =

@@ -24,9 +24,7 @@ void main() {
               home: MultiBlocProvider(
                   providers: [
                     BlocProvider<UIBloc>(builder: (BuildContext context) => UIBloc()),
-                    BlocProvider<PBDBloc>(
-                        builder: (BuildContext context) =>PBDBloc()),
-                      BlocProvider<UIBloc>(builder: (BuildContext context) => UIBloc()),
+                      BlocProvider<PBDBloc>(builder: (context) => PBDBloc())
                   ],child:App())));
     });
   });

@@ -23,9 +23,9 @@ class PBDStateLoaded extends PBDState {
   final bool backTrack;
   final ColorSelect curColor;
   final bool localSave;
-  PBDStateLoaded(this.pbdObject, this.backTrack, this.curColor, this.localSave);
+  PBDStateLoaded(this.pbdObject, this.backTrack, this.localSave, this.curColor);
   @override
-  List<Object> get props => [pbdObject, backTrack, curColor, localSave];
+  List<Object> get props => [pbdObject, backTrack, localSave, curColor];
 }
 
 class PBDStateImageLoad extends PBDState {

@@ -7,12 +7,15 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:photobooth/main.dart' as prefix0;
 import 'package:photobooth/src/data/blocs/pbd/bloc.dart';
 import 'package:photobooth/src/data/blocs/ui/bloc.dart';
 import 'package:photobooth/src/data/enums.dart';
 import 'package:photobooth/src/data/global_data.dart';
 import 'package:photobooth/src/data/services/local_save.dart';
 import 'package:photobooth/src/data/services/php_services.dart';
+import 'package:photobooth/src/ui/app.dart';
+import 'package:photobooth/src/ui/elements/image_ui.dart';
 
 class MockSharedPrefService extends Mock implements BaseSharedPrefService {}
 class MockPHPService extends Mock implements BasePHPService {}
@@ -21,9 +24,11 @@ void main() {
   UIBloc uiBloc;
   PBDBloc pbdBloc;
   MockSharedPrefService sharedPrefService;
+  MockPHPService phpService;
   setUp(() {
     uiBloc = UIBloc();
     pbdBloc = PBDBloc();
+    phpService = MockPHPService();
     sharedPrefService = MockSharedPrefService();
   });
 
@@ -53,26 +58,10 @@ void main() {
       uiBloc.add(UIEventInit());
     });
 
-
-    test('PBDoc Initialize ', () {
-      final expectedResponse = [PBDStateInit(),
-        PBDStateLoading(), PBDStateLoaded(PBDObject(null, []), false, ColorSelect.red, false)
-      ];
-
-      when(sharedPrefService.initLoadSaved()).thenAnswer((_) => Future.value(false));
-
-
-      expectLater(
-        pbdBloc,
-        emitsInOrder(expectedResponse),
-        );
-
-      pbdBloc.add(PBDEventInit());
-    });
   });
 
   group('UI Functions', () {
-    test('Change Navigation to Image Select  ', () {
+    test('Navigation to Image Select', () {
       final expectedResponse = [
         UIStateInit(),
         UIStateLoading(),
@@ -110,4 +99,66 @@ void main() {
     );
     uiBloc.add(UIEventImageSelectTrigger(UIImageTrigger.camera));
   });
+
+  group('PBDocument BLoC and Services', () {
+    test('PBDoc Reset', () {
+      final expectedResponse = [
+        PBDStateInit(),
+        PBDStateLoading(),
+        PBDStateLoaded(PBDObject(null, []), false, false, ColorSelect.red)
+      ];
+
+      expectLater(
+        pbdBloc,
+        emitsInOrder(expectedResponse),
+      );
+
+      pbdBloc.add(PBDEventReset());
+    });
+
+    test('PHPService PostBPD', () async{
+      final String file = 'file';
+      final String dir = 'directory';
+      final PBDObject pbdObject = PBDObject(null, []);
+      final int backs = 4;
+      when(phpService.postPBD(file,dir, pbdObject, backs)).thenAnswer((_)=>Future.value(true));
+      expectLater(true, await phpService.postPBD(file,dir, pbdObject, backs));
+
+    });
+    test('PHPService PostImage', ()async{
+      final String base64 = 'base64';
+      final String file = 'file';
+      final String dir = 'directory';
+
+      when(phpService.postImageBase64(base64, file,dir)).thenAnswer((_)=>Future.value(true));
+      expectLater(true, await phpService.postImageBase64(base64, file,dir));
+
+    });
+
+    test('SharedPrefService initLoadSaved',()async{
+      when(sharedPrefService.initLoadSaved()).thenAnswer((_)=>Future.value(true));
+      expect(true, await sharedPrefService.initLoadSaved());
+    });
+
+    test('SharedPrefService savePBDObject',()async{
+      final PBDObject pbdObject = PBDObject(null, []);
+      final int backs = 4;
+      when(sharedPrefService.savePBDObject(pbdObject, backs)).thenAnswer((_)=>Future.value(true));
+      expect(true, await sharedPrefService.savePBDObject(pbdObject, backs));
+
+    });
+
+    test('SharedPrefService getPBDObject',()async{
+
+      when(sharedPrefService.getPBDObject()).thenAnswer((_)=>Future.value(PBDObject(null, [])));
+      expect(PBDObject(null, []), await sharedPrefService.getPBDObject());
+
+    });
+
+    test('SharedPrefService getBacks',()async{
+      when(sharedPrefService.getBacks()).thenAnswer((_)=>Future.value(4));
+      expect(4, await sharedPrefService.getBacks());
+    });
+  });
+
 }

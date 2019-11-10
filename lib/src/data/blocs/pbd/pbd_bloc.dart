@@ -51,7 +51,7 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
       // check local available
       _localSaveBool = await _sharedPrefService.initLoadSaved();
       yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _localSaveBool, _currentColor);
     }
 
     // reset pbd stage
@@ -64,13 +64,14 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
       _currentColor = ColorSelect.red;
       _pbdObject = PBDObject(_imageFile, _strokeList);
       yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _localSaveBool, _currentColor);
     }
     // return to pbd
 
     if(event is PBDEventStage){
       // no updates to document
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+      yield PBDStateLoading();
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _localSaveBool, _currentColor);
     }
 
     // adding image to object
@@ -78,13 +79,13 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
       // add image file to PBDoc
       _pbdObject = PBDObject(_imageFile, _strokeList);
       yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _localSaveBool, _currentColor);
     }
 
     if(event is PBDEventSetColor){
       _currentColor = event.newColor;
       yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _localSaveBool, _currentColor);
     }
 
     if(event is PBDEventAddStroke){
@@ -95,7 +96,7 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
       if(_backTracks> 0)_backTracks --;
       _backTrackBool = _strokeList.length > 0 && _backTracks < BACKTRACK_MAX;
       yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _localSaveBool, _currentColor);
     }
 
     if(event is PBDEventRemoveStroke){
@@ -104,7 +105,7 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
       _backTrackBool = _strokeList.length > 0 && _backTracks < BACKTRACK_MAX;
       _pbdObject = PBDObject(_imageFile, _strokeList);
     yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _localSaveBool, _currentColor);
     }
 
     // save functions
@@ -112,16 +113,17 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
     if(event is PBDEventPostImage){
       bool success = await _phpServices.postImageBase64(event.data, event.name, event.directory);
       yield PBDStateSaveResponse(success);
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _localSaveBool, _currentColor);
     }
 
     // save photo booth document to server
     if(event is PBDEventPostPBD){
      bool success = await _phpServices.postPBD(event.name, event.directory, _pbdObject, _backTracks);
       yield PBDStateSaveResponse(success);
+
      // save local //
      if(success)_localSaveBool = await _sharedPrefService.savePBDObject(_pbdObject, _backTracks);
-     yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+     yield PBDStateLoaded(_pbdObject, _backTrackBool, _localSaveBool, _currentColor);
     }
 
     // load photo booth doc
@@ -139,22 +141,26 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
      });
 
       _backTrackBool = _strokeList.length > 0 && _backTracks < BACKTRACK_MAX;
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+      yield PBDStateLoading();
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _localSaveBool, _currentColor);
     }
 
     // Called for getting new image for editing or replacement
     if(event is PBDEventSelectImage){
+      yield PBDStateLoading();
       yield PBDStateImageLoad(_imageFile);
     }
 
     // loading a new image from gallery or camera
     if(event is PBDEventSetSelectImage){
       _imageFile = event.imageFile;
+      yield PBDStateLoading();
       yield PBDStateImageLoad(_imageFile);
     }
 
     // set to Edit
     if(event is PBDEventEditSelectImage){
+      yield PBDStateLoading();
       if(_imageFile != null) {
         yield PBDStateImageEdit(_imageFile);
         return;

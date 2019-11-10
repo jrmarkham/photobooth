@@ -107,7 +107,7 @@ TextStyle titleTextStyle() {
 
 TextStyle labelTextStyle() {
     return TextStyle (
-        color: colorWhite, fontSize:titleTextSize, fontWeight: FontWeight.bold, fontFamily: MAIN_FONT
+        color: colorBlue, fontSize:bodyTextSize, fontWeight: FontWeight.bold, fontFamily: MAIN_FONT
         );
 }
 

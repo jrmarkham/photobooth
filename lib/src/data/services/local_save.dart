@@ -1,7 +1,5 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photobooth/src/data/global_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,6 +36,7 @@ class SharedPrefService extends BaseSharedPrefService {
 
     // pbdObject;
     _backs = backs;
+
     _prefs.setString(IMAGE_PATH, _pbdObject.image.path);
     _prefs.setInt(BACK_COUNT, _backs);
     final int len = _pbdObject.strokes == null ? 0 : _pbdObject.strokes.length;
@@ -82,11 +81,6 @@ class SharedPrefService extends BaseSharedPrefService {
     return _pbdObject != null && _backs != null;
   }
 
-  /*
-      Stroke(this.color, this.offsets);
-
-   */
-
   Future<PBDObject> _buildSavePBDObject() async {
     _prefs = await SharedPreferences.getInstance();
     File image;
@@ -94,6 +88,7 @@ class SharedPrefService extends BaseSharedPrefService {
       if (_prefs.getString(IMAGE_PATH) != null)
         // image may not be found by simulator
        image = File(_prefs.getString(IMAGE_PATH)).existsSync() ? File(_prefs.getString(IMAGE_PATH)):null;
+
     }catch (e){
       debugPrint('::::ERROR:::: ${e.toString()}');
     }
