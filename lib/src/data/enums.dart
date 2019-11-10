@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 enum UINav { photoBooth, imageSelect  }
 
 // BOOTH
-enum UIBoothTrigger { reset, undo, save}
+enum UIBoothTrigger { reset, undo, save, load}
 // add 6 colors
 enum ColorSelect {
   red,

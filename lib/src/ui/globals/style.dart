@@ -104,6 +104,13 @@ TextStyle titleTextStyle() {
         color: colorWhite, fontSize:titleTextSize, fontWeight: FontWeight.bold, fontFamily: MAIN_FONT
         );
 }
+
+TextStyle labelTextStyle() {
+    return TextStyle (
+        color: colorWhite, fontSize:titleTextSize, fontWeight: FontWeight.bold, fontFamily: MAIN_FONT
+        );
+}
+
 TextStyle bodyTextStyle() {
     return TextStyle(
         color: colorBlue, fontSize: bodyTextSize, fontFamily: MAIN_FONT);
@@ -112,7 +119,7 @@ TextStyle bodyTextStyle() {
 
 TextStyle buttonTextStyle() {
     return TextStyle(
-        color: colorWhite, fontSize: bodyTextSize, fontFamily: MAIN_FONT);
+        color: colorWhite, fontSize: bodyTextSize, fontWeight: FontWeight.bold, fontFamily: MAIN_FONT);
 }// TEXT STYLES
 
 

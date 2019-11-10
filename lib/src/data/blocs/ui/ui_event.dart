@@ -21,17 +21,17 @@ class UIEventNav extends UIEvent{
 }
 
 class UIEventPhotoBoothTrigger extends UIEvent{
-  final UIBoothTrigger trigger;
-  UIEventPhotoBoothTrigger(this.trigger);
+  final UIBoothTrigger boothTrigger;
+  UIEventPhotoBoothTrigger(this.boothTrigger);
 
   @override
-  List<Object> get props => [trigger];
+  List<Object> get props => [boothTrigger];
 }
 
 class UIEventImageSelectTrigger extends UIEvent{
-  final UIImageTrigger trigger;
-  UIEventImageSelectTrigger(this.trigger);
+  final UIImageTrigger imageSelectTrigger;
+  UIEventImageSelectTrigger(this.imageSelectTrigger);
 
   @override
-  List<Object> get props => [trigger];
+  List<Object> get props => [imageSelectTrigger];
 }

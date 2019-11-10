@@ -6,11 +6,11 @@ import 'package:photobooth/src/ui/elements/color_dropdown.dart';
 class PhotoBoothUI extends StatelessWidget {
   final UIBloc _uiBloc;
   final bool _pbdAvailable;
-  final bool _listAvailable;
-  final bool _backTrackAvailable;
+  final bool _loadAvailable;
+  final bool _backAvailable;
   final ColorSelect _currentColor;
   final Function _setColor;
-  PhotoBoothUI(this._uiBloc, this._pbdAvailable, this._listAvailable, this._backTrackAvailable, this._currentColor, this._setColor);
+  PhotoBoothUI(this._uiBloc, this._pbdAvailable, this._loadAvailable, this._backAvailable, this._currentColor, this._setColor);
 
 
   @override
@@ -18,15 +18,15 @@ class PhotoBoothUI extends StatelessWidget {
     final Function newFileFunction = _pbdAvailable
         ? () => _uiBloc.add(UIEventPhotoBoothTrigger(UIBoothTrigger.reset))
         : null;
-    final Function openFunction = _listAvailable
-        ? () => null // _uiBloc.add(UIEventNav(UINav.list))
+    final Function openFunction = _loadAvailable
+        ? () => _uiBloc.add(UIEventPhotoBoothTrigger(UIBoothTrigger.load))
         : null;
     final Function saveFunction = _pbdAvailable
         ? () => _uiBloc.add(UIEventPhotoBoothTrigger(UIBoothTrigger.save))
         : null;
-    final Function imageSelectFunction =
-        () => _uiBloc.add(UIEventNav(UINav.imageSelect));
-    final Function undoFunction = _backTrackAvailable
+    final Function imageSelectFunction = () => _uiBloc.add(UIEventNav(UINav.imageSelect));
+
+    final Function undoFunction = _backAvailable
         ? () => _uiBloc.add(UIEventPhotoBoothTrigger(UIBoothTrigger.undo))
         : null;
 

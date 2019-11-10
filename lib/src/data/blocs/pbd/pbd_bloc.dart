@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:photobooth/src/data/enums.dart';
 import 'package:photobooth/src/data/models/pbd.dart';
+import 'package:photobooth/src/data/services/local_save.dart';
 import 'package:photobooth/src/data/services/php_services.dart';
 import './bloc.dart';
 
@@ -21,12 +22,18 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
   int _backTracks = 0;
   bool _backTrackBool = false;
   ColorSelect _currentColor = ColorSelect.red;
+  // LOCAL SAVE
+  bool _localSaveBool = false;
+
   // BLOC for displaying and the photo and drawing ui
   // updates will be coordinated w/ image function and ui calls//
 
 
   // post data service
   final BasePHPService _phpServices = PHPService();
+  // local save shared service
+  final BaseSharedPrefService _sharedPrefService = SharedPrefService();
+
 
   @override
   Stream<PBDState> mapEventToState(
@@ -37,9 +44,14 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
       // should be empty object
       _imageFile = null;
       _backTrackBool = false;
+
+
       _pbdObject = PBDObject(_imageFile, _strokeList);
+
+      // check local available
+      _localSaveBool = await _sharedPrefService.initLoadSaved();
       yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
     }
 
     // reset pbd stage
@@ -52,13 +64,13 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
       _currentColor = ColorSelect.red;
       _pbdObject = PBDObject(_imageFile, _strokeList);
       yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
     }
     // return to pbd
 
     if(event is PBDEventStage){
       // no updates to document
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
     }
 
     // adding image to object
@@ -66,13 +78,13 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
       // add image file to PBDoc
       _pbdObject = PBDObject(_imageFile, _strokeList);
       yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
     }
 
     if(event is PBDEventSetColor){
       _currentColor = event.newColor;
       yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
     }
 
     if(event is PBDEventAddStroke){
@@ -83,7 +95,7 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
       if(_backTracks> 0)_backTracks --;
       _backTrackBool = _strokeList.length > 0 && _backTracks < BACKTRACK_MAX;
       yield PBDStateLoading();
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
     }
 
     if(event is PBDEventRemoveStroke){
@@ -92,7 +104,7 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
       _backTrackBool = _strokeList.length > 0 && _backTracks < BACKTRACK_MAX;
       _pbdObject = PBDObject(_imageFile, _strokeList);
     yield PBDStateLoading();
-    yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
     }
 
     // save functions
@@ -100,14 +112,34 @@ class PBDBloc extends Bloc<PBDEvent, PBDState> {
     if(event is PBDEventPostImage){
       bool success = await _phpServices.postImageBase64(event.data, event.name, event.directory);
       yield PBDStateSaveResponse(success);
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor);
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
     }
 
     // save photo booth document to server
     if(event is PBDEventPostPBD){
      bool success = await _phpServices.postPBD(event.name, event.directory, _pbdObject, _backTracks);
       yield PBDStateSaveResponse(success);
-      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor);
+     // save local //
+     if(success)_localSaveBool = await _sharedPrefService.savePBDObject(_pbdObject, _backTracks);
+     yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
+    }
+
+    // load photo booth doc
+
+    if(event is PBDEventLoadPBD){
+      // get data
+      // get backtracks
+      _pbdObject = await _sharedPrefService.getPBDObject();
+      _backTracks = await _sharedPrefService.getBacks();
+      _imageFile = _pbdObject.image;
+
+      _strokeList.clear();
+     _pbdObject.strokes.forEach((stroke){
+       _strokeList.add(stroke);
+     });
+
+      _backTrackBool = _strokeList.length > 0 && _backTracks < BACKTRACK_MAX;
+      yield PBDStateLoaded(_pbdObject, _backTrackBool, _currentColor, _localSaveBool);
     }
 
     // Called for getting new image for editing or replacement

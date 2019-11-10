@@ -97,3 +97,12 @@ class PBDEventPostPBD extends PBDEvent{
   @override
   List<Object> get props => [name, directory];
 }
+
+
+// load image and data refresh w/ save PBD
+class PBDEventLoadPBD extends PBDEvent{
+
+  @override
+  List<Object> get props => [];
+}
+

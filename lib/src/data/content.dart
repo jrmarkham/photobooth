@@ -27,7 +27,10 @@ final String saveImage = 'Save Image';
 final String btnOk = 'OK';
 final String btnCancel = 'Cancel';
 // Save options
-
+final String saveTitle = 'Saved';
+final String saveMsg = 'Your file was successfully saved.';
+final String saveErrorTitle = 'Error';
+final String saveErrorMsg = 'Your file was failed to saved.';
 // Notifications
 
 // Errors

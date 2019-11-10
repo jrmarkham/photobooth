@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photobooth/src/data/global_data.dart';
-import 'package:photobooth/src/data/global_data.dart' as prefix0;
  // alert ui to save a new image file or a project //
  // alert ui w/ form elements to save file
  // generic alert
@@ -20,7 +19,7 @@ Future<void> informAlert(
                  return CupertinoAlertDialog(
                      title: Text(
                          title,
-                         style: titleTextStyle(),
+                         style: labelTextStyle(),
                          ),
                      content: Text(
                          message,
@@ -30,7 +29,7 @@ Future<void> informAlert(
                          FlatButton(
                              child: Text(
                                  btnOk,
-                                 style: bodyTextStyle(),
+                                 style: labelTextStyle(),
                                  ),
                              onPressed: () => Navigator.pop(context),
                              ),
@@ -40,7 +39,7 @@ Future<void> informAlert(
              return AlertDialog(
                  title: Text(
                      title,
-                     style: bodyTextStyle(),
+                     style: labelTextStyle(),
                      textAlign: TextAlign.center,
                      ),
                  content: Text(
@@ -52,7 +51,7 @@ Future<void> informAlert(
                      FlatButton(
                          child: Text(
                              btnOk,
-                             style: bodyTextStyle(),
+                             style: labelTextStyle(),
                              ),
                          onPressed: () => Navigator.pop(context),
                          )
@@ -70,7 +69,7 @@ Future<void> dialogContainer(BuildContext context, String title, Widget content,
                 backgroundColor: colorWhite,
                 title: Text(
                     title,
-                    style: bodyTextStyle(),
+                    style: labelTextStyle(),
                     textAlign: TextAlign.center,
                     ),
                 content: content,
@@ -79,7 +78,7 @@ Future<void> dialogContainer(BuildContext context, String title, Widget content,
                              FlatButton(
                                  child: Text(
                                      btnOk,
-                                     style: bodyTextStyle(),
+                                     style: labelTextStyle(),
                                      ),
                                  onPressed: () => Navigator.pop(context))
                          ]
