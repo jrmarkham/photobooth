@@ -1,4 +1,33 @@
 PHOTO BOOTH 
+
+
+Installing 
+I am assuming that Xcode or Android Studio is previously  installed and the use of emulators and simulators is understood. 
+
+First install Flutter — 
+https://flutter.dev/docs/get-started/install
+
+Once flutter is installed and the git is loaded locally. Go the photo builder directory to run test test and launch emulators/simulators. 
+
+So once in the project directory run: 
+CLI>flutter doctor -v 
+
+You’ll get a complete list of how flutter is doing and any problems. The final part shows connected devices all connected Emulators, Simulator and usb connected devices.
+
+Looks like this: 
+[
+• AOSP on IA Emulator • emulator-5554 • android-x86 • Android 9 (API 28) (emulator)
+• JM iPhone X         • fb23caaec4bfc8e2ad73ab81cb5717a370687766 • ios         • iOS 13.1.3
+• iPhone X            • 47EE6965-A1CA-4A20-8C41-F930CD362754     • ios    
+]
+
+Then to run on a device 
+
+CLI> flutter run -d [Device Reference] // ie: flutter run -d emulator-5554 // flutter run -d fb23caaec4bfc8e2ad73ab81cb5717a370687766
+
+
+
+
 Project Structure 
 For keeping state and managing data and UI. I like to use a BLoC pattern.  
 BLoC pattern is similar to Redux but much easier (at least for me) to get running. 
