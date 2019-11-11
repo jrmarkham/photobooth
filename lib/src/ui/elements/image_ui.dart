@@ -32,7 +32,7 @@ class ImageSelectorUI extends StatelessWidget {
           children: <Widget>[
             iconButton(
                 icon: iconClose, function: closeFunction, tooltip: btnClose),
-            iconButton(icon: iconCheck, function: saveFunction, tooltip: btnSave),
+            iconButton(icon: iconCheck, function: saveFunction, tooltip: btnCheck),
             iconButton(icon: iconEdit, function: editFunction, tooltip: btnEdit),
             iconButton(
                 icon: iconGallery,

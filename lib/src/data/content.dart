@@ -8,14 +8,15 @@ final String saveHeader = 'Save Image or PBD';
 
 // buttons
 final String btnNewFile = 'New File';
-final String btnSave = 'New File';
+final String btnSave = 'Save';
 final String btnImage = 'Get Image';
 final String btnUndo = 'Undo';
+final String btnCheck = 'Use Image';
 final String btnClose = 'Close';
 final String btnOpen = 'Open';
 final String btnGallery= 'Gallery';
 final String btnCamera = 'Camera';
-final String btnEdit = 'Undo';
+final String btnEdit = 'Edit Image';
 
 // labels
 final String labelCropper = 'Edit Image';
