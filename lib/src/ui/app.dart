@@ -79,12 +79,7 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-
-
     initDevice(context);
-
-
-
 
     final Function saveImageFunction = (String name, String dir) =>
         imageUtils.saveImage(name, dir, _pbdBloc, _globalKey);
@@ -187,10 +182,8 @@ class _AppState extends State<App> {
           // POST RESPONSE
           if (state is PBDStateSaveResponse) {
             state.response
-                ? informAlert(
-                    context, saveTitle, saveMsg)
-                : informAlert(
-                context, saveErrorTitle, saveErrorMsg);
+                ? informAlert(context, saveTitle, saveMsg)
+                : informAlert(context, saveErrorTitle, saveErrorMsg);
           }
 
           // IMAGE SELECT STATE
@@ -205,15 +198,15 @@ class _AppState extends State<App> {
         }),
       ],
 
-      child: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(appTitle, style: titleTextStyle()),
-          ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(appTitle, style: titleTextStyle()),
+        ),
 
-          // bloc build for ui -- toggle between main
-          // Core detector for closing mobile keyboard
-          body: GestureDetector(
+        // bloc build for ui -- toggle between main
+        // Core detector for closing mobile keyboard
+        body: SafeArea(
+          child: GestureDetector(
               // close key boards
               behavior: HitTestBehavior.translucent,
               onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
